@@ -30,7 +30,6 @@ export const AirDAW = () => {
                 predictLoop();
             } catch (e) {
                 throw e;
-                
             }
         }
 
@@ -63,7 +62,7 @@ export const AirDAW = () => {
                 
                 // Draw connections first, so dots sit on top of the lines
                 ctx.strokeStyle = '#F2C879';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 1;
                 for (const connection of HandLandmarker.HAND_CONNECTIONS) {
                     const start = hand[connection.start];
                     const end = hand[connection.end];
@@ -84,7 +83,7 @@ export const AirDAW = () => {
                     const x = point.x * canvas.width;
                     const y = point.y * canvas.height;
                     ctx.beginPath();
-                    ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                    ctx.arc(x, y, 2, 0, 2 * Math.PI);
                     ctx.fillStyle = '#F2C879';
                     ctx.fill();
                 }
@@ -99,10 +98,9 @@ export const AirDAW = () => {
     }, [])
 
     return (
-        <div className={"relative w-full h-screen bg-amber-500"}>
-            <video autoPlay playsInline ref={videoRef} className={"absolute"} style={{width: 640, height: 480}}></video>
-            <canvas ref={canvasRef} className={"absolute w-full h-full"} style={{width: 640, height: 480}}></canvas>
-
+        <div className={"relative w-screen h-screen bg-amber-500"}>
+            <video autoPlay playsInline ref={videoRef} className={"absolute inset-0 w-full h-full object-cover"} ></video>
+            <canvas ref={canvasRef} className={"absolute inset-0 w-full h-full object-cover"} ></canvas>
         </div>
     );
 };
