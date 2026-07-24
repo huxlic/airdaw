@@ -56,20 +56,25 @@ export const AirDAW = () => {
             if (!ctx) return;
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 15, 0.6)';
+            ctx.fillRect(0,0,canvas.width,canvas.height)
             
             if (detections.landmarks.length > 0) {
                 const hand = detections.landmarks[0];
                 
                 // Draw connections first, so dots sit on top of the lines
                 ctx.strokeStyle = '#F2C879';
-                ctx.lineWidth = 1;
+                ctx.lineWidth = .5;
+                ctx.shadowColor = "#df981d";
+                ctx.shadowBlur = 30;
+                
                 for (const connection of HandLandmarker.HAND_CONNECTIONS) {
                     const start = hand[connection.start];
                     const end = hand[connection.end];
                     
-                    const startX = start.x * canvas.width;
+                    const startX = (1 - start.x) * canvas.width;
                     const startY = start.y * canvas.height;
-                    const endX = end.x * canvas.width;
+                    const endX = (1 - end.x) * canvas.width;
                     const endY = end.y * canvas.height;
                     
                     ctx.beginPath();
@@ -80,8 +85,9 @@ export const AirDAW = () => {
                 
                 // Then draw the dots on top
                 for (const point of hand) {
-                    const x = point.x * canvas.width;
+                    const x = (1 - point.x) * canvas.width;
                     const y = point.y * canvas.height;
+                    
                     ctx.beginPath();
                     ctx.arc(x, y, 2, 0, 2 * Math.PI);
                     ctx.fillStyle = '#F2C879';
@@ -99,7 +105,7 @@ export const AirDAW = () => {
 
     return (
         <div className={"relative w-screen h-screen bg-amber-500"}>
-            <video autoPlay playsInline ref={videoRef} className={"absolute inset-0 w-full h-full object-cover"} ></video>
+            <video autoPlay playsInline ref={videoRef} className={"absolute inset-0 w-full h-full object-cover -scale-x-100"} ></video>
             <canvas ref={canvasRef} className={"absolute inset-0 w-full h-full object-cover"} ></canvas>
         </div>
     );
