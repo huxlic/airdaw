@@ -15,9 +15,16 @@ export const AirDAW = () => {
             const hand = detections.landmarks[0];
             drawHandSkeleton(ctx, hand, video.videoWidth, video.videoHeight);
             
-            // const thumbTip = hand[4];
-            // const indexTip = hand[8];
-            // console.log(thumbTip, indexTip);
+            const thumbTip = hand[4];
+            const indexTip = hand[8];
+
+            const midX = (thumbTip.x + indexTip.x) / 2;
+            const midY = (thumbTip.y + indexTip.y) / 2;
+
+            const dx = thumbTip.x - indexTip.x;
+            const dy = thumbTip.y - indexTip.y;
+            const distance = Math.hypot(dx, dy);
+            
             
         }
     })
