@@ -14,6 +14,11 @@ export const AirDAW = () => {
         if (detections.landmarks.length > 0) {
             const hand = detections.landmarks[0];
             drawHandSkeleton(ctx, hand, video.videoWidth, video.videoHeight);
+            
+            // const thumbTip = hand[4];
+            // const indexTip = hand[8];
+            // console.log(thumbTip, indexTip);
+            
         }
     })
     return (
