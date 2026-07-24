@@ -1,7 +1,10 @@
+import {AirDAW} from "./AirDAW.tsx";
 
 const App = () => {
     return (
-        <div>App</div>
+        <div>
+            <AirDAW/>
+        </div>
     )
 }
 export default App
