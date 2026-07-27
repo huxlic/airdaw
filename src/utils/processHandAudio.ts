@@ -30,7 +30,7 @@ const processHandAudio = (hand: NormalizedLandmark[]) => {
 	synth.frequency.rampTo(frequency, 0.1);
 	filter.frequency.rampTo(filterFreq, 0.1);
 	
-	const pinchThreshold = 0.05;
+	const pinchThreshold = 0.02;
 	
 	if (distance < pinchThreshold && !isPinching) {
 		isPinching = true;
