@@ -65,7 +65,6 @@ const useHandTracking = (onFrame: OnFrame) => {
 			onFrameRef.current(detections, video, canvas);
 			animationId = requestAnimationFrame(predictLoop);
 		}
-		
 		setup();
 		
 		return () => {

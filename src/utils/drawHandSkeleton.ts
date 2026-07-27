@@ -34,7 +34,7 @@ const drawHandSkeleton = (
 		const y = point.y * videoHeight;
 		
 		ctx.beginPath();
-		ctx.arc(x, y, 2, 0, 2 * Math.PI);
+		ctx.arc(x, y, 1.5, 0, 2 * Math.PI);
 		ctx.fillStyle = '#F2C879';
 		ctx.fill();
 	}
