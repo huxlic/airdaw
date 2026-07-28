@@ -36,12 +36,14 @@ export const AirDAW = () => {
             <canvas ref={canvasRef} className={"absolute inset-0 w-full h-full object-cover"} ></canvas>
             
             {!audioStarted && (
-                <button
-                    onClick={handleStart}
-                    className="absolute inset-0 flex items-center justify-center text-white text-xl bg-black/70"
-                >
-                    Enter the stage
-                </button>
+                <div className={"absolute inset-0 flex items-center justify-center bg-black/70"}>
+                    <button
+                        onClick={handleStart}
+                        className=" text-white text-[14px] px-3 py-2 rounded-xl bg-blue-800 cursor-pointer active:scale-95 transition-transform duration-300"
+                    >
+                        Enter the stage
+                    </button>
+                </div>
             )}
         </div>
     );
