@@ -1,34 +1,35 @@
 import * as Tone from 'tone';
 import type {NormalizedLandmark} from "@mediapipe/tasks-vision";
 import mapRange from "./mapRange.ts";
-import {DuoSynth} from "tone";
-let synth: DuoSynth | null = null;
+let synth: Tone.PolySynth  | null = null;
 let filter: Tone.Filter | null = null;
 let isPinching = false;
+let activeChord: number[] = []
+
+const scale = [
+	130.81, 146.83, 164.81, 196.00, 220.00, // C3 D3 E3 G3 A3
+	261.63, 293.66, 329.63, 392.00, 440.00, // C4 D4 E4 G4 A4
+	523.25 // C5
+];
 
 export const initAudio = async () => {
 	await Tone.start();
 	
-	const reverb = new Tone.Reverb({ decay: 2, wet: 0.3 }).toDestination();
+	const reverb = new Tone.Reverb({ decay: 3.5, wet: 0.45 }).toDestination();
 	await reverb.ready;
 	
-	const chorus = new Tone.Chorus(4, 2.5, 0.5).connect(reverb);
+	// The echo effect: repeats each note, fading out, bouncing left-right
+	const delay = new Tone.PingPongDelay("8n", 0.3).connect(reverb);
+	delay.wet.value = 0.35;
 	
-	filter = new Tone.Filter(350, "lowpass", -12).connect(chorus);
+	const chorus = new Tone.Chorus(4, 2.5, 0.5).connect(delay);
+	const vibrato = new Tone.Vibrato(5, 0.15).connect(chorus);
 	
-	synth = new Tone.DuoSynth({
-		portamento: 0.08,
-		harmonicity: 1.005, // near-unison — the two voices beat gently against each other for thickness
-		vibratoAmount: 0.3,
-		vibratoRate: 5,
-		voice0: {
-			oscillator: { type: "triangle" },
-			envelope: { attack: 0.05, decay: 0.2, sustain: 0.6, release: 0.4 }
-		},
-		voice1: {
-			oscillator: { type: "triangle" },
-			envelope: { attack: 0.05, decay: 0.2, sustain: 0.6, release: 0.4 }
-		}
+	filter = new Tone.Filter(150, "highpass", -12).connect(vibrato);
+	
+	synth = new Tone.PolySynth(Tone.Synth, {
+		oscillator: { type: "sine" },
+		envelope: { attack: 0.15, decay: 0.3, sustain: 0.7, release: 0.8 }
 	}).connect(filter);
 }
 
@@ -45,20 +46,31 @@ const processHandAudio = (hand: NormalizedLandmark[]) => {
 	const dy = thumbTip.y - indexTip.y;
 	const distance = Math.hypot(dx, dy);
 	
-	const frequency = mapRange(midX, 0, 1, 100, 800);
-	const filterFreq  = mapRange(midY, 0, 1, 4000, 200);
+	// const index = Math.floor(mapRange(midX, 0, 1, 0, scale.length - 1));
 	
-	synth.frequency.rampTo(frequency, 0.1);
+	// const chord = [
+	// 	scale[index],
+	// 	scale[Math.min(index + 2, scale.length - 1)],
+	// 	scale[Math.min(index + 4, scale.length - 1)]
+	// ];
+	
+	const filterFreq = mapRange(midY, 0, 1, 3000, 300);
 	filter.frequency.rampTo(filterFreq, 0.1);
 	
 	const pinchThreshold = 0.05;
 	
 	if (distance < pinchThreshold && !isPinching) {
 		isPinching = true;
-		synth.triggerAttack(frequency);
+		const index = Math.floor(mapRange(midX, 0, 1, 0, scale.length - 1));
+		activeChord = [
+			scale[index],
+			scale[Math.min(index + 2, scale.length - 1)],
+			scale[Math.min(index + 4, scale.length - 1)]
+		];
+		synth.triggerAttack(activeChord);
 	} else if (distance >= pinchThreshold && isPinching) {
 		isPinching = false;
-		synth.triggerRelease();
+		synth.triggerRelease(activeChord);
 	}
 }
 
