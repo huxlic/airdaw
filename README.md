@@ -1,75 +1,55 @@
-# React + TypeScript + Vite
+# AirDAW
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AirDAW is a browser-based, gesture-controlled mini-DAW built with React + Vite. It uses MediaPipe Hand Landmarker to track hand landmarks and Tone.js to synthesize audio in real time — pinch your thumb and index finger to trigger chords and control filter with vertical motion.
 
-Currently, two official plugins are available:
+Key features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Real-time hand tracking using MediaPipe Hand Landmarker
+- Audio synthesis and effects using Tone.js (polyphonic synth, reverb, delay, filter)
+- Simple single-page UI: click "Enter the stage" to enable audio and camera
 
-## React Compiler
+Quick start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Prerequisites: Node.js (18+) and npm
 
-## Expanding the ESLint configuration
+1. Install dependencies
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+   npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+2. Run development server
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+   npm run dev
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+3. Open http://localhost:5173
 
-```
+Usage
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Click "Enter the stage" to grant camera and audio permission.
+- The app listens for a pinch (thumb ↔ index). When pinching, a chord is triggered. Vertical position controls the filter frequency.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Project structure (important files)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- src/AirDAW.tsx — main component that wires camera, canvas and audio
+- src/hooks/useHandTracking.ts — MediaPipe setup and video loop
+- src/utils/processHandAudio.ts — maps landmarks to Tone.js synth and effects
+- public/hand_landmarker.task and public/mediapipe-wasm — runtime assets required by MediaPipe (served from /)
 
-```
+Scripts (from package.json)
+
+- npm run dev — start Vite dev server
+- npm run build — build production assets (runs tsc -b && vite build)
+- npm run lint — run ESLint
+- npm run preview — preview built site
+
+Notes
+
+- MediaPipe files in public/ must be served at the root (the app expects /hand_landmarker.task and /mediapipe-wasm).
+- Audio playback requires a user gesture to unlock the Web Audio API — use the "Enter the stage" button.
+
+Contributing
+
+Issues and PRs welcome. Keep changes small and focused.
+
+License
+
+MIT
