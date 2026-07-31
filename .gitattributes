@@ -4,11 +4,13 @@
 *.ts diff=typescript
 *.tsx diff=typescript
 
-# Specify which files should be linguist-detectable
-*.js -linguist-detectable
-*.jsx -linguist-detectable
-eslint.config.js linguist-language=JavaScript
+# Mark generated/vendor files as non-detectable
+public/**/*.js linguist-generated=true
+public/**/*.wasm linguist-generated=true
+node_modules/** linguist-generated=true
+dist/** linguist-generated=true
 
 # Configuration files
+eslint.config.js linguist-language=JavaScript
 tsconfig*.json linguist-language=JSON
 vite.config.ts linguist-language=TypeScript
