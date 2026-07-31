@@ -1,0 +1,14 @@
+* text=auto
+
+# TypeScript
+*.ts diff=typescript
+*.tsx diff=typescript
+
+# Specify which files should be linguist-detectable
+*.js -linguist-detectable
+*.jsx -linguist-detectable
+eslint.config.js linguist-language=JavaScript
+
+# Configuration files
+tsconfig*.json linguist-language=JSON
+vite.config.ts linguist-language=TypeScript
